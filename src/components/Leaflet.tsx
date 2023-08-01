@@ -22,7 +22,7 @@ export function Leaflet({
   const drawnItems = DrawnItemsStore[0]();
 
   const mapContainer = (
-    <div id="map" style="width: 800px; height: 600px; border: 1px solid #ccc" />
+    <div id="map" class="rounded-lg" style={{ "width": "100%", "height": "600px", "border": "1px solid #ccc", "z-index": 1 }} />
   );
 
   // initialize map

@@ -1,6 +1,12 @@
 import L from "leaflet";
 import { createSignal } from "solid-js";
 import { DrawnItemsStore, ShapeStore } from "../store";
+import { Textarea } from "./ui/Textarea";
+import { Input } from "./ui/Input";
+import { Label } from "./ui/Label";
+import { DialogFooter } from "./ui/Dialog";
+import { Button } from "./ui/Button";
+
 
 export function ShapeForm() {
   const drawnItems = DrawnItemsStore[0]();
@@ -34,38 +40,37 @@ export function ShapeForm() {
   };
 
   return (
-    <>
-      <h1>Import Shape</h1>
-      <form onSubmit={onSubmit}>
-        <label for="name">Name:</label>
-        <br />
-        <input
+    <form class="space-y-4" onSubmit={onSubmit}>
+      {error() && (
+        <>
+          <span style="color: red;">{error()}</span>
+          <br />
+        </>
+      )}
+
+      <div>
+        <Label for="name">Name</Label>
+        <Input
           type="text"
           id="name"
           name="name"
           value={name()}
           onChange={(e) => setName(e.currentTarget.value)}
         />
-        <br />
+      </div>
 
-        <label for="cords">Cords:</label>
-        <br />
-        <textarea
+      <div>
+        <Label for="cords">Cords</Label>
+        <Textarea
           id="cords"
           name="cords"
           value={cords()}
           onChange={(e) => setCords(e.currentTarget.value)}
-        ></textarea>
-        <br />
-        {error() && (
-          <>
-            <span style="color: red;">{error()}</span>
-            <br />
-          </>
-        )}
-
-        <button>Import</button>
-      </form>
-    </>
+        />
+      </div>
+      <DialogFooter>
+        <Button type="submit">Import</Button>
+      </DialogFooter>
+    </form>
   );
 }
