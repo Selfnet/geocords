@@ -3,15 +3,13 @@ import "leaflet-draw";
 import "leaflet/dist/leaflet.css";
 import "leaflet-draw/dist/leaflet.draw.css";
 import { onMount } from "solid-js";
+import { ShapeStore } from "../store";
 
 interface LeafletProps {
   center: L.LatLngExpression;
   zoom?: number;
   maxZoom?: number;
   drawControPosition?: L.ControlPosition;
-  onShapeCreate?: (id: number, layer: L.Layer) => void;
-  onShapeEdit?: (id: number, layer: L.Layer) => void;
-  onShapeDelete?: (id: number) => void;
 }
 
 export function Leaflet({
@@ -19,10 +17,9 @@ export function Leaflet({
   zoom,
   maxZoom,
   drawControPosition,
-  onShapeCreate,
-  onShapeEdit,
-  onShapeDelete,
 }: LeafletProps) {
+  const [shapes, setShapes] = ShapeStore;
+
   const mapContainer = (
     <div id="map" style="width: 800px; height: 600px; border: 1px solid #ccc" />
   );
@@ -63,27 +60,33 @@ export function Leaflet({
 
     // add custom event listener to check when shapes are created
     if (layerType == "polygon") {
-      if (onShapeCreate) onShapeCreate(drawnItems.getLayerId(layer), layer);
+      const id = drawnItems.getLayerId(layer);
+      setShapes([...shapes(), { id, layer }]);
     }
   });
 
   // notify parent component when layers are modified
-  if (onShapeEdit) {
-    map.on(L.Draw.Event.EDITED, (e: L.LeafletEvent) => {
-      const { layers } = e as L.DrawEvents.Edited;
-      layers.eachLayer((layer) =>
-        onShapeEdit(drawnItems.getLayerId(layer), layer)
+  map.on(L.Draw.Event.EDITED, (e: L.LeafletEvent) => {
+    const { layers } = e as L.DrawEvents.Edited;
+    layers.eachLayer((layer) => {
+      const id = drawnItems.getLayerId(layer);
+      setShapes(
+        shapes().map((shape) => {
+          if (shape.id === id) return { ...shape, layer };
+          return shape;
+        })
       );
     });
-  }
+  });
 
   // notify parent component when layers are modified
-  if (onShapeDelete) {
-    map.on(L.Draw.Event.DELETED, (e: L.LeafletEvent) => {
-      const { layers } = e as L.DrawEvents.Deleted;
-      layers.eachLayer((layer) => onShapeDelete(drawnItems.getLayerId(layer)));
+  map.on(L.Draw.Event.DELETED, (e: L.LeafletEvent) => {
+    const { layers } = e as L.DrawEvents.Deleted;
+    layers.eachLayer((layer) => {
+      const id = drawnItems.getLayerId(layer);
+      setShapes(shapes().filter((shape) => shape.id !== id));
     });
-  }
+  });
 
   // trigger resize to properly scale the map
   onMount(() => map.invalidateSize());
