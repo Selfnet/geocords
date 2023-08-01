@@ -12,17 +12,16 @@ interface LeafletProps {
   drawControPosition?: L.ControlPosition;
 }
 
-export function Leaflet({
-  center,
-  zoom,
-  maxZoom,
-  drawControPosition,
-}: LeafletProps) {
+export function Leaflet({ center, zoom, maxZoom, drawControPosition }: LeafletProps) {
   const [shapes, setShapes] = ShapeStore;
   const drawnItems = DrawnItemsStore[0]();
 
   const mapContainer = (
-    <div id="map" style="width: 800px; height: 600px; border: 1px solid #ccc" />
+    <div
+      id="map"
+      class="rounded-lg"
+      style={{ width: "100%", height: "600px", border: "1px solid #ccc", "z-index": 1 }}
+    />
   );
 
   // initialize map
@@ -75,7 +74,7 @@ export function Leaflet({
         shapes().map((shape) => {
           if (shape.id === id) return { ...shape, layer };
           return shape;
-        })
+        }),
       );
     });
   });

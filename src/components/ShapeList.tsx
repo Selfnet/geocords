@@ -1,5 +1,7 @@
 import { For } from "solid-js";
 import { ShapeStore } from "../store";
+import { Button } from "./ui/Button";
+import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "./ui/Table";
 
 function ShapeCords({ layer }: { layer: L.Layer }) {
   const geojson = (layer as L.Polygon).toGeoJSON();
@@ -21,16 +23,26 @@ export function ShapeList() {
   const [shapes] = ShapeStore;
 
   return (
-    <ul>
-      <For each={shapes()}>
-        {({ name, layer }) => (
-          <li>
-            <p>{name}</p>
-            <br />
-            <ShapeCords layer={layer} />
-          </li>
-        )}
-      </For>
-    </ul>
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Element</TableHead>
+          <TableHead>Edit</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        <For each={shapes()}>
+          {({ name, layer }, i) => (
+            <TableRow>
+              <TableCell class="font-medium">{name}</TableCell>
+              {/* <ShapeCords layer={layer} /> */}
+              <TableCell class="font-medium">
+                <Button />
+              </TableCell>
+            </TableRow>
+          )}
+        </For>
+      </TableBody>
+    </Table>
   );
 }

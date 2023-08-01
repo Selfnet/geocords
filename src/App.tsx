@@ -1,22 +1,23 @@
 import { Leaflet } from "./components/Leaflet";
-import { ShapeForm } from "./components/ShapeForm";
-import { ShapeList } from "./components/ShapeList";
+import SideCard from "./components/SideCard";
+import Footer from "./layout/Footer";
+import Header from "./layout/Header";
 
 export function App() {
   return (
-    <>
-      <h1>Vite + Solid</h1>
-      <p class="read-the-docs">
-        Click on the Vite and Solid logos to learn more
-      </p>
-      <Leaflet
-        center={[48.744992, 9.103155]}
-        zoom={16}
-        maxZoom={20}
-        drawControPosition="bottomleft"
-      />
-      <ShapeList />
-      <ShapeForm />
-    </>
+    <div>
+      <Header />
+      <div class="container">
+        <div class="grid grid-cols-3 gap-4">
+          <div class="col-span-1">
+            <SideCard />
+          </div>
+          <div class="col-span-2">
+            <Leaflet center={[48.744992, 9.103155]} zoom={16} maxZoom={20} drawControPosition="bottomleft" />
+          </div>
+        </div>
+      </div>
+      <Footer />
+    </div>
   );
 }
