@@ -13,16 +13,11 @@ export function App() {
             <SideCard />
           </div>
           <div class="col-span-2">
-            <Leaflet
-              center={[48.744992, 9.103155]}
-              zoom={16}
-              maxZoom={20}
-              drawControPosition="bottomleft"
-            />
+            <Leaflet center={[48.744992, 9.103155]} zoom={16} maxZoom={20} drawControPosition="bottomleft" />
           </div>
         </div>
       </div>
       <Footer />
-    </div >
+    </div>
   );
 }

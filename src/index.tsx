@@ -1,11 +1,10 @@
 /* @refresh reload */
-import { render } from 'solid-js/web'
+import { render } from "solid-js/web";
 
-import '@/index.css'
-import "leaflet/dist/leaflet.css";
-import "leaflet-draw/dist/leaflet.draw.css";
-import { App } from './App'
+import "@/index.css";
 
-const root = document.getElementById('root')
+import { App } from "./App";
 
-render(() => <App />, root!)
+const root = document.getElementById("root");
+
+render(() => <App />, root!);

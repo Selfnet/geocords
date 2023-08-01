@@ -7,7 +7,6 @@ import { Label } from "./ui/Label";
 import { DialogFooter } from "./ui/Dialog";
 import { Button } from "./ui/Button";
 
-
 export function ShapeForm() {
   const drawnItems = DrawnItemsStore[0]();
   const [shapes, setShapes] = ShapeStore;
@@ -50,23 +49,12 @@ export function ShapeForm() {
 
       <div>
         <Label for="name">Name</Label>
-        <Input
-          type="text"
-          id="name"
-          name="name"
-          value={name()}
-          onChange={(e) => setName(e.currentTarget.value)}
-        />
+        <Input type="text" id="name" name="name" value={name()} onChange={(e) => setName(e.currentTarget.value)} />
       </div>
 
       <div>
         <Label for="cords">Cords</Label>
-        <Textarea
-          id="cords"
-          name="cords"
-          value={cords()}
-          onChange={(e) => setCords(e.currentTarget.value)}
-        />
+        <Textarea id="cords" name="cords" value={cords()} onChange={(e) => setCords(e.currentTarget.value)} />
       </div>
       <DialogFooter>
         <Button type="submit">Import</Button>
