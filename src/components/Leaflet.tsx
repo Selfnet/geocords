@@ -3,7 +3,7 @@ import "leaflet-draw";
 import "leaflet/dist/leaflet.css";
 import "leaflet-draw/dist/leaflet.draw.css";
 import { onMount } from "solid-js";
-import { ShapeStore } from "../store";
+import { DrawnItemsStore, ShapeStore } from "../store";
 
 interface LeafletProps {
   center: L.LatLngExpression;
@@ -19,6 +19,7 @@ export function Leaflet({
   drawControPosition,
 }: LeafletProps) {
   const [shapes, setShapes] = ShapeStore;
+  const drawnItems = DrawnItemsStore[0]();
 
   const mapContainer = (
     <div id="map" style="width: 800px; height: 600px; border: 1px solid #ccc" />
@@ -32,7 +33,6 @@ export function Leaflet({
   }).addTo(map);
 
   // add draw control overlay to map
-  const drawnItems = new L.FeatureGroup();
   map.addLayer(drawnItems);
 
   const drawControl = new L.Control.Draw({
@@ -61,7 +61,8 @@ export function Leaflet({
     // add custom event listener to check when shapes are created
     if (layerType == "polygon") {
       const id = drawnItems.getLayerId(layer);
-      setShapes([...shapes(), { id, layer }]);
+      const name = `Shape ${id}`;
+      setShapes([...shapes(), { id, name, layer }]);
     }
   });
 

@@ -1,4 +1,5 @@
 import { Leaflet } from "./components/Leaflet";
+import { ShapeForm } from "./components/ShapeForm";
 import { ShapeList } from "./components/ShapeList";
 
 export function App() {
@@ -15,6 +16,7 @@ export function App() {
         drawControPosition="bottomleft"
       />
       <ShapeList />
+      <ShapeForm />
     </>
   );
 }

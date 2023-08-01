@@ -23,9 +23,9 @@ export function ShapeList() {
   return (
     <ul>
       <For each={shapes()}>
-        {({ id, layer }) => (
+        {({ name, layer }) => (
           <li>
-            <p>Shape {id}</p>
+            <p>{name}</p>
             <br />
             <ShapeCords layer={layer} />
           </li>
