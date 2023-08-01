@@ -8,24 +8,37 @@ on:
 jobs:
   # Build job
   build:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+    runs-on: ubuntu-latest
+    permissions:
+      actions: none
+      checks: none
+      contents: write
+      deployments: none
+      issues: none
+      packages: none
+      pull-requests: none
+      repository-projects: none
+      security-events: none
+      statuses: none
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: 20
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
 
-    - name: Install all dependencies
-      run: npm ci
+      - name: Install all dependencies
+        run: npm ci
 
-    - name: Build static frontend
-      run: npm run build
+      - name: Build static frontend
+        run: npm run build
 
-    - name: Upload Pages artifact
-      uses: actions/upload-pages-artifact@v2
-      with:
-        path: dist/
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: dist/
 
   # Deploy job
   deploy:
