@@ -1,13 +1,17 @@
-name: Deploy gh-pages
+name: Build, Lighthouse, and Deploy
 
 on:
   push:
+    branches:
+      - main
+  pull_request:
     branches:
       - main
 
 jobs:
   # Build job
   build:
+    name: Install and Build
     runs-on: ubuntu-latest
     permissions:
       actions: none
@@ -40,8 +44,22 @@ jobs:
         with:
           path: dist/
 
+  # Lighthouse (check performance and accessibility)
+  lighthouse:
+    name: Lighthouse
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Lighthouse
+        run: npm install -g @lhci/cli
+
+      - name: Run Lighthouse CI
+        run: lhci autorun
+
   # Deploy job
   deploy:
+    name: Deploy to GitHub Pages
+
     # Add a dependency to the build job
     needs: build
 
@@ -54,6 +72,8 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
     # Specify runner + deployment step
     runs-on: ubuntu-latest
