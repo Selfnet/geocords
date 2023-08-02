@@ -6,7 +6,7 @@ import { Input } from "./ui/Input";
 import { Label } from "./ui/Label";
 import { DialogFooter } from "./ui/Dialog";
 import { Button } from "./ui/Button";
-import { showToast } from "./ui/toast";
+import { showToast } from "./ui/Toast";
 
 export function ShapeForm() {
   const drawnItems = DrawnItemsStore[0]();
@@ -16,15 +16,6 @@ export function ShapeForm() {
 
   const onSubmit = (e: SubmitEvent) => {
     e.preventDefault();
-
-    if (!name()) {
-      showToast({
-        title: "Error",
-        description: "Please specify a valid name",
-        variant: "destructive",
-      });
-      return;
-    }
 
     try {
       const polygon = new L.Polygon(JSON.parse(cords()));
@@ -38,7 +29,7 @@ export function ShapeForm() {
       console.error(err);
       showToast({
         title: "Error",
-        description: "Could not parse JSON",
+        description: "Could not parse Input. Please check your input and try again.",
         variant: "destructive",
       });
       return;
@@ -49,12 +40,12 @@ export function ShapeForm() {
     <form class="space-y-4" onSubmit={onSubmit}>
       <div>
         <Label for="name">Name</Label>
-        <Input type="text" id="name" name="name" value={name()} onChange={(e) => setName(e.currentTarget.value)} />
+        <Input type="text" id="name" name="name" value={name()} onChange={(e) => setName(e.currentTarget.value)} required />
       </div>
 
       <div>
         <Label for="cords">Cords</Label>
-        <Textarea id="cords" name="cords" value={cords()} onChange={(e) => setCords(e.currentTarget.value)} />
+        <Textarea id="cords" name="cords" value={cords()} onChange={(e) => setCords(e.currentTarget.value)} required />
       </div>
 
       <DialogFooter>

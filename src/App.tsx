@@ -1,6 +1,6 @@
 import { Leaflet } from "./components/Leaflet";
 import SideCard from "./components/SideCard";
-import { Toaster } from "./components/ui/toast";
+import { Toaster } from "./components/ui/Toast";
 import Footer from "./layout/Footer";
 import Header from "./layout/Header";
 
