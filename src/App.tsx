@@ -1,5 +1,6 @@
 import { Leaflet } from "./components/Leaflet";
 import SideCard from "./components/SideCard";
+import { Toaster } from "./components/ui/toast";
 import Footer from "./layout/Footer";
 import Header from "./layout/Header";
 
@@ -17,6 +18,7 @@ export function App() {
           </div>
         </div>
       </div>
+      <Toaster />
       <Footer />
     </div>
   );

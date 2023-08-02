@@ -1,6 +1,6 @@
 import { Button, buttonVariants } from "./ui/Button";
 import { Card, CardContent, CardHeader } from "./ui/Card";
-import { IconSquareRoundedPlus, IconFileExport } from "@tabler/icons-solidjs";
+import { IconPlus, IconDownload } from "@tabler/icons-solidjs";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "./ui/Dialog";
 import { ShapeList } from "./ShapeList";
 import { ShapeForm } from "./ShapeForm";
@@ -9,10 +9,10 @@ function SideCard() {
   return (
     <Card class="overflow-auto">
       <CardHeader class="grid grid-cols-2 gap-4 space-y-0">
-        <div class="flex flex-col justify-start">
+        <div class="flex justify-start">
           <Dialog>
             <DialogTrigger class={buttonVariants({ variant: "ghost", size: "icon-sm" })}>
-              <IconSquareRoundedPlus size={20} aria-label="GitHub Icon" />
+              <IconPlus size={20} aria-label="Import Shape" />
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
@@ -23,9 +23,15 @@ function SideCard() {
             </DialogContent>
           </Dialog>
         </div>
-        <div class="flex flex-col justify-end">
-          <Button variant="ghost" size="icon-sm">
-            <IconFileExport size={20} aria-label="GitHub Icon" />
+        <div class="flex justify-end">
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            onClick={() => {
+              alert("Not implemented yet.");
+            }}
+          >
+            <IconDownload size={20} aria-label="Export All" />
           </Button>
         </div>
       </CardHeader>
