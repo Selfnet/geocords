@@ -1,13 +1,17 @@
-name: Deploy gh-pages
+name: Build, Lighthouse, and Deploy
 
 on:
   push:
+    branches:
+      - main
+  pull_request:
     branches:
       - main
 
 jobs:
   # Build job
   build:
+    name: Install and Build
     runs-on: ubuntu-latest
     permissions:
       actions: none
@@ -22,12 +26,13 @@ jobs:
       statuses: none
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 20
+          cache: "npm"
 
       - name: Install all dependencies
         run: npm ci
@@ -40,8 +45,22 @@ jobs:
         with:
           path: dist/
 
+  # Lighthouse (check performance and accessibility)
+  lighthouse:
+    name: Lighthouse
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Lighthouse
+        run: npm install -g @lhci/cli
+
+      - name: Run Lighthouse CI
+        run: lhci autorun
+
   # Deploy job
   deploy:
+    name: Deploy to GitHub Pages
+
     # Add a dependency to the build job
     needs: build
 
@@ -54,6 +73,8 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
     # Specify runner + deployment step
     runs-on: ubuntu-latest
