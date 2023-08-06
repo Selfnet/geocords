@@ -3,7 +3,7 @@ import { ShapeStore } from "../store";
 import { Button } from "./ui/Button";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "./ui/Table";
 import { IconCopy } from "@tabler/icons-solidjs";
-import { Toaster, showToast } from "./ui/Toast";
+import { showToast } from "./ui/Toast";
 
 export function ShapeList() {
   const [shapes] = ShapeStore;

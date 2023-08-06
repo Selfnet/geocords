@@ -4,8 +4,12 @@ import { IconPlus, IconDownload } from "@tabler/icons-solidjs";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "./ui/Dialog";
 import { ShapeList } from "./ShapeList";
 import { ShapeForm } from "./ShapeForm";
+import { ShapeStore } from "@/store";
+import { showToast } from "./ui/Toast";
 
 function SideCard() {
+  const [shapes, setShapes] = ShapeStore;
+
   return (
     <Card class="overflow-auto">
       <CardHeader class="grid grid-cols-2 gap-4 space-y-0">
@@ -28,7 +32,20 @@ function SideCard() {
             variant="ghost"
             size="icon-sm"
             onClick={() => {
-              alert("Not implemented yet.");
+              navigator.clipboard.writeText(
+                JSON.stringify(
+                  shapes().map((shape: any) => ({
+                    id: shape.id,
+                    name: shape.name,
+                    type: shape.type,
+                    coordinates: shape.layer.getLatLngs()[0],
+                  })),
+                ),
+              );
+              showToast({
+                title: "Success",
+                description: "Copied shapes to clipboard.",
+              });
             }}
           >
             <IconDownload size={20} aria-label="Export All" />
