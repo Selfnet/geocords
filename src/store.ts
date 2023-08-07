@@ -4,6 +4,7 @@ import { createSignal } from "solid-js";
 export interface Shape {
   id: number;
   name: string;
+  type: string;
   layer: L.Layer;
 }
 

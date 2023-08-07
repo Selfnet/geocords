@@ -1,95 +1,77 @@
-import L from "leaflet";
-import "leaflet-draw";
+import * as L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import "leaflet-draw/dist/leaflet.draw.css";
-import { onMount } from "solid-js";
+import "@geoman-io/leaflet-geoman-free";
+import "@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css";
+import { JSX, createEffect, onMount } from "solid-js";
 import { DrawnItemsStore, ShapeStore } from "../store";
 
-interface LeafletProps {
+interface LeafletProps extends JSX.HTMLAttributes<HTMLDivElement> {
   center: L.LatLngExpression;
   zoom?: number;
-  maxZoom?: number;
   drawControPosition?: L.ControlPosition;
 }
 
-export function Leaflet({ center, zoom, maxZoom, drawControPosition }: LeafletProps) {
+export function Leaflet({ center, zoom, drawControPosition, ...props }: LeafletProps) {
   const [shapes, setShapes] = ShapeStore;
   const drawnItems = DrawnItemsStore[0]();
 
-  const mapContainer = (
-    <div
-      id="map"
-      class="rounded-lg"
-      style={{ width: "100%", height: "600px", border: "1px solid #ccc", "z-index": 1 }}
-    />
-  );
+  const MapContainer = <div {...props} id="map" />;
 
   // initialize map
-  const map = L.map(mapContainer as HTMLElement).setView(center, zoom);
+  const map = L.map(MapContainer as HTMLElement, { pmIgnore: false }).setView(center, zoom);
   L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    maxZoom: maxZoom,
+    minZoom: 10,
+    maxNativeZoom: 18,
+    maxZoom: 23,
     attribution: "© OpenStreetMap",
   }).addTo(map);
+
+  // when loading the map, the shapes from the store are added to the map
+  createEffect(() => {
+    shapes().forEach((shape) => {
+      drawnItems.addLayer(shape.layer);
+    });
+  });
 
   // add draw control overlay to map
   map.addLayer(drawnItems);
 
-  const drawControl = new L.Control.Draw({
-    position: drawControPosition,
-    draw: {
-      polyline: false,
-      polygon: {},
-      rectangle: false,
-      circle: false,
-      circlemarker: false,
-      marker: false,
-    },
-    edit: {
-      featureGroup: drawnItems,
-      remove: true,
-    },
+  map.pm.addControls({
+    position: "topleft",
+    drawCircleMarker: false,
+    rotateMode: false,
+    drawText: false,
+    drawCircle: false,
   });
 
-  map.addControl(drawControl);
+  // listen to when a new layer is created
+  map.on("pm:create", function (e) {
+    console.log("create", e.layer._leaflet_id);
+    setShapes([
+      ...shapes(),
+      { id: e.layer._leaflet_id, name: `Shape ${e.layer._leaflet_id}`, type: e.shape, layer: e.layer },
+    ]);
 
-  // add listener to add new layers when drawing shape
-  map.on(L.Draw.Event.CREATED, (e: L.LeafletEvent) => {
-    const { layer, layerType } = e as L.DrawEvents.Created;
-    drawnItems.addLayer(layer);
-
-    // add custom event listener to check when shapes are created
-    if (layerType == "polygon") {
-      const id = drawnItems.getLayerId(layer);
-      const name = `Shape ${id}`;
-      setShapes([...shapes(), { id, name, layer }]);
-    }
-  });
-
-  // notify parent component when layers are modified
-  map.on(L.Draw.Event.EDITED, (e: L.LeafletEvent) => {
-    const { layers } = e as L.DrawEvents.Edited;
-    layers.eachLayer((layer) => {
-      const id = drawnItems.getLayerId(layer);
+    // listen to changes on the new layer
+    e.layer.on("pm:update", function (x) {
+      console.log("edit", x.layer._leaflet_id);
       setShapes(
         shapes().map((shape) => {
-          if (shape.id === id) return { ...shape, layer };
+          if (shape.id === e.layer._leaflet_id) return { ...shape, layer: e.layer };
           return shape;
         }),
       );
     });
-  });
 
-  // notify parent component when layers are modified
-  map.on(L.Draw.Event.DELETED, (e: L.LeafletEvent) => {
-    const { layers } = e as L.DrawEvents.Deleted;
-    layers.eachLayer((layer) => {
-      const id = drawnItems.getLayerId(layer);
-      setShapes(shapes().filter((shape) => shape.id !== id));
+    // listen to when a layer is removed
+    e.layer.on("pm:remove", function (x) {
+      console.log("remove", x.layer._leaflet_id);
+      setShapes(shapes().filter((shape) => shape.id !== e.layer._leaflet_id));
     });
   });
 
   // trigger resize to properly scale the map
   onMount(() => map.invalidateSize());
 
-  return mapContainer;
+  return MapContainer;
 }

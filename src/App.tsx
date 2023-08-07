@@ -9,12 +9,17 @@ export function App() {
     <div>
       <Header />
       <div class="container">
-        <div class="grid grid-cols-3 gap-4">
+        <div class="grid h-screen grid-cols-3 gap-4">
           <div class="col-span-1">
             <SideCard />
           </div>
           <div class="col-span-2">
-            <Leaflet center={[48.744992, 9.103155]} zoom={16} maxZoom={20} drawControPosition="bottomleft" />
+            <Leaflet
+              class="z-0 h-full w-full rounded-lg border"
+              center={[48.744992, 9.103155]}
+              zoom={16}
+              drawControPosition="bottomleft"
+            />
           </div>
         </div>
       </div>
