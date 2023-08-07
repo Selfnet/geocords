@@ -15,12 +15,7 @@ export function Leaflet({ center, zoom, drawControPosition, ...props }: LeafletP
   const [shapes, setShapes] = ShapeStore;
   const drawnItems = DrawnItemsStore[0]();
 
-  const MapContainer = (
-    <div
-      {...props}
-      id="map"
-    />
-  );
+  const MapContainer = <div {...props} id="map" />;
 
   // initialize map
   const map = L.map(MapContainer as HTMLElement, { pmIgnore: false }).setView(center, zoom);
@@ -42,33 +37,35 @@ export function Leaflet({ center, zoom, drawControPosition, ...props }: LeafletP
   map.addLayer(drawnItems);
 
   map.pm.addControls({
-    position: 'topleft',
+    position: "topleft",
     drawCircleMarker: false,
     rotateMode: false,
     drawText: false,
     drawCircle: false,
   });
 
-
   // listen to when a new layer is created
-  map.on('pm:create', function (e) {
-    console.log('create', e.layer._leaflet_id)
-    setShapes([...shapes(), { id: e.layer._leaflet_id, name: `Shape ${e.layer._leaflet_id}`, type: e.shape, layer: e.layer }]);
+  map.on("pm:create", function (e) {
+    console.log("create", e.layer._leaflet_id);
+    setShapes([
+      ...shapes(),
+      { id: e.layer._leaflet_id, name: `Shape ${e.layer._leaflet_id}`, type: e.shape, layer: e.layer },
+    ]);
 
     // listen to changes on the new layer
-    e.layer.on('pm:update', function (x) {
-      console.log('edit', x.layer._leaflet_id)
+    e.layer.on("pm:update", function (x) {
+      console.log("edit", x.layer._leaflet_id);
       setShapes(
         shapes().map((shape) => {
           if (shape.id === e.layer._leaflet_id) return { ...shape, layer: e.layer };
           return shape;
-        }
-        ));
+        }),
+      );
     });
 
     // listen to when a layer is removed
-    e.layer.on('pm:remove', function (x) {
-      console.log('remove', x.layer._leaflet_id)
+    e.layer.on("pm:remove", function (x) {
+      console.log("remove", x.layer._leaflet_id);
       setShapes(shapes().filter((shape) => shape.id !== e.layer._leaflet_id));
     });
   });

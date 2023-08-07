@@ -29,7 +29,7 @@ export function ShapeForm() {
 
           parsed.forEach((shape: any) => {
             const polygon = new L.Polygon([shape.coordinates.map((c: any) => [c.lat, c.lng])]);
-            console.log(polygon.toGeoJSON())
+            console.log(polygon.toGeoJSON());
             drawnItems.addLayer(polygon);
             const id = drawnItems.getLayerId(polygon);
             setShapes([...shapes(), { id, name: shape.name, type: shape.type, layer: polygon }]);
@@ -57,7 +57,6 @@ export function ShapeForm() {
         title: "Success",
         description: "Shape imported successfully.",
       });
-
     } catch (err) {
       console.error(err);
       showToast({
@@ -95,7 +94,9 @@ export function ShapeForm() {
             // setCords("");
             // (document.getElementById("file") as HTMLInputElement).value = "";
           }}
-        >Clear</Button>
+        >
+          Clear
+        </Button>
         <Button type="submit">Import</Button>
       </DialogFooter>
     </form>
